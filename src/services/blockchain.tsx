@@ -304,6 +304,7 @@ export const fetchCampaignDetails = async (
     donors: campaign.donors.toNumber(),
     withdrawals: campaign.withdrawals.toNumber(),
     balance: campaign.balance.toNumber() / 1e9,
+    deadline: campaign.deadline.toNumber() * 1000,
   }
 
   store.dispatch(setCampaign(serialized))
@@ -374,6 +375,7 @@ const serializedCampaigns = (campaigns: any[]): Campaign[] => {
     donors: c.account.donors.toNumber(),
     withdrawals: c.account.withdrawals.toNumber(),
     balance: c.account.balance.toNumber() / 1e9,
+    deadline: c.account.deadline.toNumber() *1000,
   }))
 }
 

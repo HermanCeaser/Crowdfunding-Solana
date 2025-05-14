@@ -25,16 +25,15 @@ export default function Page() {
     e.preventDefault()
     if (!publicKey) return toast.warn('Please connect wallet')
 
+    const campaignDeadline = Math.floor(new Date(form.deadline).getTime() / 1000);
+    if (campaignDeadline <= Math.floor(Date.now() / 1000)) {
+      return toast.error('Deadline must be in the future');
+    }
+
     await toast.promise(
       new Promise<void>(async (resolve, reject) => {
         try {
-          const { title, description, image_url, goal, deadline } = form
-
-          const campaignDeadline = Math.floor(new Date(deadline).getTime() / 1000);
-          console.log(campaignDeadline);
-          if (campaignDeadline <= Math.floor(Date.now() / 1000)) {
-            throw new Error('Deadline must be in the future');
-          }
+          const { title, description, image_url, goal } = form
           const tx: any = await createCampaign(
             program!,
             publicKey!,
@@ -104,6 +103,7 @@ export default function Page() {
         />
         <input
           type="datetime-local"
+          placeholder="What's the campaign deadline!"
           value={form.deadline}
           onChange={(e) => setForm({ ...form, deadline: e.target.value })}
           className="w-full p-2 border rounded text-black"

@@ -56,9 +56,11 @@ describe('fundus', () => {
     const description = `Test Campaign description #${CID.toString()}`
     const image_url = `https://dummy_image_${CID.toString()}.png`
     const goal = new anchor.BN(25 * 1_000_000_000) // 25 SOLtoken
+    const now         = Math.floor(Date.now() / 1000)
+    const deadline    = new anchor.BN(now + 60*60) // 1 Hour
 
     const tx = await program.methods
-      .createCampaign(title, description, image_url, goal)
+      .createCampaign(title, description, image_url, goal, deadline)
       .accountsPartial({
         programState: programStatePda,
         campaign: campaignPda,
@@ -291,3 +293,5 @@ describe('fundus', () => {
     console.log('state:', stateAfter)
   })
 })
+
+
