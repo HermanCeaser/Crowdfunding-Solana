@@ -65,7 +65,8 @@ export const createCampaign = async (
   title: string,
   description: string,
   image_url: string,
-  goal: number
+  goal: number,
+  deadline: number,
 ): Promise<TransactionSignature> => {
   const [programStatePda] = PublicKey.findProgramAddressSync(
     [Buffer.from('program_state')],
@@ -81,8 +82,9 @@ export const createCampaign = async (
   )
 
   const goalBN = new BN(goal * 1_000_000_000)
+  const deadlineBN = new BN(deadline);
   tx = await program.methods
-    .createCampaign(title, description, image_url, goalBN)
+    .createCampaign(title, description, image_url, goalBN, deadlineBN)
     .accountsPartial({
       programState: programStatePda,
       campaign: campaignPda,

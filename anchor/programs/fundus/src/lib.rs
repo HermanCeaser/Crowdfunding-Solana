@@ -26,8 +26,9 @@ pub mod fundus {
         description: String,
         image_url: String,
         goal: u64,
+        deadline: u64,
     ) -> Result<()> {
-        instructions::create_campaign(ctx, title, description, image_url, goal)
+        instructions::create_campaign(ctx, title, description, image_url, goal, deadline)
     }
 
     pub fn update_campaign(

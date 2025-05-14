@@ -60,6 +60,10 @@ export type Fundus = {
         {
           "name": "goal",
           "type": "u64"
+        },
+        {
+          "name": "deadline",
+          "type": "u64"
         }
       ]
     },
@@ -538,6 +542,16 @@ export type Fundus = {
       "code": 6013,
       "name": "invalidPlatformFee",
       "msg": "Invalid platform fee percentage."
+    },
+    {
+      "code": 6014,
+      "name": "invalidDeadline",
+      "msg": "Deadline must be in the future"
+    },
+    {
+      "code": 6015,
+      "name": "campaignEnded",
+      "msg": "Campaign has already ended"
     }
   ],
   "types": [
@@ -593,6 +607,10 @@ export type Fundus = {
           {
             "name": "active",
             "type": "bool"
+          },
+          {
+            "name": "deadline",
+            "type": "u64"
           }
         ]
       }

@@ -54,6 +54,10 @@
         {
           "name": "goal",
           "type": "u64"
+        },
+        {
+          "name": "deadline",
+          "type": "u64"
         }
       ]
     },
@@ -532,6 +536,16 @@
       "code": 6013,
       "name": "InvalidPlatformFee",
       "msg": "Invalid platform fee percentage."
+    },
+    {
+      "code": 6014,
+      "name": "InvalidDeadline",
+      "msg": "Deadline must be in the future"
+    },
+    {
+      "code": 6015,
+      "name": "CampaignEnded",
+      "msg": "Campaign has already ended"
     }
   ],
   "types": [
@@ -587,6 +601,10 @@
           {
             "name": "active",
             "type": "bool"
+          },
+          {
+            "name": "deadline",
+            "type": "u64"
           }
         ]
       }

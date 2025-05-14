@@ -16,7 +16,9 @@ pub fn create_campaign(
 
     
     let now = Clock::get()?.unix_timestamp as u64;
-    require!(deadline > now, ErrorCode::InvalidDeadline);
+    if deadline > now {
+        return Err(InvalidDeadline.into());
+    }
 
     if title.len() > 64 {
         return Err(TitleTooLong.into());

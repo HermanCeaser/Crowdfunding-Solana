@@ -18,6 +18,7 @@ export default function Page() {
     description: '',
     image_url: '',
     goal: '',
+    deadline: '',
   })
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -27,14 +28,21 @@ export default function Page() {
     await toast.promise(
       new Promise<void>(async (resolve, reject) => {
         try {
-          const { title, description, image_url, goal } = form
+          const { title, description, image_url, goal, deadline } = form
+
+          const campaignDeadline = Math.floor(new Date(deadline).getTime() / 1000);
+          console.log(campaignDeadline);
+          if (campaignDeadline <= Math.floor(Date.now() / 1000)) {
+            throw new Error('Deadline must be in the future');
+          }
           const tx: any = await createCampaign(
             program!,
             publicKey!,
             title,
             description,
             image_url,
-            Number(goal)
+            Number(goal),
+            campaignDeadline
           )
 
           setForm({
@@ -42,6 +50,7 @@ export default function Page() {
             description: '',
             image_url: '',
             goal: '',
+            deadline: '',
           })
 
           console.log(tx)
@@ -90,6 +99,13 @@ export default function Page() {
               setForm({ ...form, goal: value })
             }
           }}
+          className="w-full p-2 border rounded text-black"
+          required
+        />
+        <input
+          type="datetime-local"
+          value={form.deadline}
+          onChange={(e) => setForm({ ...form, deadline: e.target.value })}
           className="w-full p-2 border rounded text-black"
           required
         />
