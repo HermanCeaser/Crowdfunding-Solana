@@ -18,4 +18,5 @@ pub struct Campaign {
     pub withdrawals: u64,
     pub balance: u64,
     pub active: bool,
+    pub deadline: u64,
 }

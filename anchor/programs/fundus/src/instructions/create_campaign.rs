@@ -9,9 +9,14 @@ pub fn create_campaign(
     description: String,
     image_url: String,
     goal: u64,
+    deadline: u64,
 ) -> Result<()> {
     let campaign = &mut ctx.accounts.campaign;
     let state = &mut ctx.accounts.program_state;
+
+    
+    let now = Clock::get()?.unix_timestamp as u64;
+    require!(deadline > now, ErrorCode::InvalidDeadline);
 
     if title.len() > 64 {
         return Err(TitleTooLong.into());
@@ -38,6 +43,7 @@ pub fn create_campaign(
     campaign.donors = 0;
     campaign.withdrawals = 0;
     campaign.timestamp = Clock::get()?.unix_timestamp as u64;
+    campaign.deadline = deadline;
     campaign.active = true;
 
     Ok(())

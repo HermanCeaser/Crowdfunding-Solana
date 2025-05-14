@@ -30,4 +30,8 @@ pub enum ErrorCode {
     InvalidPlatformAddress,
     #[msg("Invalid platform fee percentage.")]
     InvalidPlatformFee,
+    #[msg("Deadline must be in the future")]
+    InvalidDeadline,
+    #[msg("Campaign has already ended")]
+    CampaignEnded,
 }
