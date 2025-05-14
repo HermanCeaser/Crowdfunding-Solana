@@ -10,7 +10,7 @@ use instructions::*;
 use states::*;
 
 // Program ID declaration (replace with your own ID when deploying)
-declare_id!("gzA5TYS2jsyr9PvwXcdLqkBwnx7j8NuT7xjyzVqndri");
+declare_id!("7tbCA1ZFx3BFcD3gCxKUL3Xs9zPKGMaVHSb6aJerAHSA");
 
 #[program]
 pub mod fundus {
