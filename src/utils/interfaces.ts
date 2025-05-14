@@ -12,6 +12,7 @@ export interface Campaign {
   withdrawals: number
   balance: number
   active: boolean
+  deadline: number
 }
 
 export interface Transaction {

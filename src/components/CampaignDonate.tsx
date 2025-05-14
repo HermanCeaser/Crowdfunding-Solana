@@ -26,9 +26,18 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
     () => getProvider(publicKey, signTransaction, sendTransaction),
     [publicKey, signTransaction, sendTransaction]
   )
+  const expired = useMemo(
+    () => {
+      const now = Math.floor(Date.now() / 1000)
+      return now > campaign.deadline
+    }, [campaign.deadline])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    if (expired) {
+      return toast.error('This campaign has expired and cannot accept donations.')
+    }
 
     if (Number(amount) + campaign.amountRaised > campaign.goal) {
       return toast.warn('Amount exceeds campaign goal')
@@ -71,6 +80,11 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
           <FaDonate className="text-green-600" />
           Donate
         </h2>
+        {expired && (
+          <p className="text-red-600 font-semibold mb-4">
+            This campaign has expired and is no longer accepting donations.
+          </p>
+        )}
         <form onSubmit={handleSubmit}>
           <label
             htmlFor="donationAmount"
@@ -98,17 +112,19 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
           <button
             type="submit"
             disabled={
+              expired ||
               !amount ||
               !campaign.active ||
               campaign.amountRaised >= campaign.goal
             }
             className={`mt-4 w-full bg-green-600 hover:bg-green-700 ${
+              expired || 
               !amount ||
               !campaign.active ||
               campaign.amountRaised >= campaign.goal
-                ? 'opacity-50 cursor-not-allowed'
-                : ''
-            } text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2`}
+              ? 'opacity-50 cursor-not-allowed'
+              : ''
+              } text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2`}
           >
             <FaDonate />
             Donate Now

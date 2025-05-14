@@ -546,12 +546,12 @@ export type Fundus = {
     {
       "code": 6014,
       "name": "invalidDeadline",
-      "msg": "Deadline must be in the future"
+      "msg": "Campaign deadline must be in the future"
     },
     {
       "code": 6015,
       "name": "campaignEnded",
-      "msg": "Campaign has already ended"
+      "msg": "The Campaign has already ended"
     }
   ],
   "types": [

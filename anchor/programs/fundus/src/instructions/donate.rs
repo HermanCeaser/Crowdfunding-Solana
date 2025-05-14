@@ -12,6 +12,11 @@ pub fn donate(ctx: Context<DonateCtx>, cid: u64, amount: u64) -> Result<()> {
         return Err(CampaignNotFound.into());
     }
 
+    let now = Clock::get()?.unix_timestamp as u64;
+    if now <= campaign.deadline {
+        return Err(CampaignEnded.into());
+    }
+
     if !campaign.active {
         return Err(InactiveCampaign.into());
     }
