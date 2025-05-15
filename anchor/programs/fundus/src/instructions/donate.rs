@@ -13,7 +13,7 @@ pub fn donate(ctx: Context<DonateCtx>, cid: u64, amount: u64) -> Result<()> {
     }
 
     let now = Clock::get()?.unix_timestamp as u64;
-    if now <= campaign.deadline {
+    if now > campaign.deadline {
         return Err(CampaignEnded.into());
     }
 

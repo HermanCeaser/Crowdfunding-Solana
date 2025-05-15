@@ -16,7 +16,7 @@ pub fn create_campaign(
 
     
     let now = Clock::get()?.unix_timestamp as u64;
-    if deadline > now {
+    if now < campaign.deadline {
         return Err(InvalidDeadline.into());
     }
 
