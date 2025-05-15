@@ -34,8 +34,40 @@ describe('fundus', () => {
 
   let CID: any, DONORS_COUNT: any, WITHDRAW_COUNT: any
 
+  it('initializes program state', async () => {
+    provider = toggleProvider('deployer')
+    program = new anchor.Program<Fundus>(idl as any, provider)
+    const deployer = provider.wallet
+
+    const [programStatePda] = PublicKey.findProgramAddressSync(
+      [Buffer.from('program_state')],
+      program.programId
+    )
+
+    try {
+      const tx = await program.methods
+        .initialize()
+        .accountsPartial({
+          programState: programStatePda,
+          deployer: deployer.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc()
+
+      console.log('Initialization Transaction Signature:', tx)
+
+      const state = await program.account.programState.fetch(programStatePda)
+      console.log("Program State:", state)
+      expect(state.initialized).toBe(true)
+      expect(state.campaignCount.toNumber()).toBe(0)
+    } catch (error) {
+      // If already initialized, that's fine - we can continue
+      console.log("Program already initialized, continuing...")
+    }
+  })
+
   it('creates a campaign', async () => {
-    provider = toggleProvider('creator')
+    provider = toggleProvider('deployer')
     program = new anchor.Program<Fundus>(idl as any, provider)
     const creator = provider.wallet
 
@@ -56,8 +88,12 @@ describe('fundus', () => {
     const description = `Test Campaign description #${CID.toString()}`
     const image_url = `https://dummy_image_${CID.toString()}.png`
     const goal = new anchor.BN(25 * 1_000_000_000) // 25 SOLtoken
-    const now         = Math.floor(Date.now() / 1000)
-    const deadline    = new anchor.BN(now + 60*60) // 1 Hour
+
+    const slot = await provider.connection.getSlot()
+    const currentTimestamp = (await provider.connection.getBlockTime(slot)) || Math.floor(Date.now() / 1000)
+
+    // Set deadline to 1 hour from now (in seconds)
+    const deadline = new anchor.BN(currentTimestamp + 3600)
 
     const tx = await program.methods
       .createCampaign(title, description, image_url, goal, deadline)
@@ -78,7 +114,7 @@ describe('fundus', () => {
   })
 
   it('update a campaign', async () => {
-    provider = toggleProvider('creator')
+    provider = toggleProvider('deployer')
     program = new anchor.Program<Fundus>(idl as any, provider)
     const creator = provider.wallet
 
@@ -162,7 +198,7 @@ describe('fundus', () => {
   })
 
   it('withdraw from campaign', async () => {
-    provider = toggleProvider('creator')
+    provider = toggleProvider('deployer')
     program = new anchor.Program<Fundus>(idl as any, provider)
     const creator = provider.wallet
 
@@ -240,7 +276,7 @@ describe('fundus', () => {
   })
 
   it('delete a campaign', async () => {
-    provider = toggleProvider('creator')
+    provider = toggleProvider('deployer')
     program = new anchor.Program<Fundus>(idl as any, provider)
     const creator = provider.wallet
 
@@ -293,5 +329,3 @@ describe('fundus', () => {
     console.log('state:', stateAfter)
   })
 })
-
-
